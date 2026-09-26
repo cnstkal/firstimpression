@@ -364,8 +364,8 @@
       const grid = document.createElement("div");
       grid.className = "export-grid";
       if (group.members.length <= 4) {
-        grid.style.gridTemplateColumns = "repeat(" + group.members.length + ", minmax(0, 1fr))";
-        grid.style.gridTemplateRows = "1fr";
+        grid.style.gridTemplateColumns = "1fr";
+        grid.style.gridTemplateRows = "repeat(" + group.members.length + ", minmax(0, 1fr))";
         grid.style.gridAutoFlow = "row";
       } else {
         grid.style.gridTemplateRows = "repeat(" + Math.ceil(group.members.length / 2) + ", minmax(0, 1fr))";
