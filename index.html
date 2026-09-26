@@ -54,7 +54,6 @@
     <section id="homeView" class="home-view">
       <header class="home-header">
         <div>
-          <p class="eyebrow">FIRST IMPRESSION</p>
           <h1>첫인상표</h1>
           
         </div>
@@ -74,10 +73,9 @@
     </section>
 
     <section id="tableView" class="table-view" hidden>
-      <button class="back-btn" id="backBtn" type="button">← 그룹 목록</button>
+      <button class="back-btn" id="backBtn" type="button">← 이전</button>
       <header class="table-title">
         <div>
-          <p class="eyebrow" id="selectedEyebrow">FIRST IMPRESSION</p>
           <h1 id="selectedGroupName"></h1>
         </div>
       </header>
@@ -91,7 +89,7 @@
         <div id="members"></div>
       </section>
       <div class="next-wrap">
-        <button class="next-btn" id="nextBtn" type="button">다음</button><button class="bottom-save-btn" id="bottomSaveBtn" type="button">이미지로 저장</button>
+        <button class="next-btn" id="nextBtn" type="button">다음</button>
       </div>
     </section>
   </main>
@@ -135,7 +133,7 @@
     const exportCanvas = document.getElementById("exportCanvas");
     const exportClose = document.getElementById("exportClose");
     const saveBtn = document.getElementById("saveBtn");
-    const bottomSaveBtn = document.getElementById("bottomSaveBtn");
+
 
     function initials(name) { return name.slice(0,1); }
     const conceptPhotos = {
@@ -451,9 +449,7 @@
         return;
       }
       saveBtn.disabled = true;
-      if (bottomSaveBtn) bottomSaveBtn.disabled = true;
       saveBtn.textContent = "저장 중…";
-      if (bottomSaveBtn) bottomSaveBtn.textContent = "저장 중…";
       try {
         const resultImg = exportCanvas.querySelector(".export-result-image");
         if (!resultImg || !resultImg.src) throw new Error("result image");
@@ -465,14 +461,11 @@
         alert("자동 저장이 안 되면 완성된 표를 꾹 눌러 이미지로 저장해주세요.");
       } finally {
         saveBtn.disabled = false;
-        if (bottomSaveBtn) bottomSaveBtn.disabled = false;
         saveBtn.textContent = "이미지로 저장";
-        if (bottomSaveBtn) bottomSaveBtn.textContent = "이미지로 저장";
       }
     }
 
     saveBtn.addEventListener("click", saveExportImage);
-    bottomSaveBtn.addEventListener("click", saveExportImage);
 
     genderTabs.addEventListener("click", (event) => {
       const button = event.target.closest(".gender-tab");
