@@ -35,15 +35,15 @@
     .head-label small{display:block;margin-top:2px;color:#aaa;font-size:10px;font-weight:600;letter-spacing:.02em}
     #members{display:flex;flex-direction:column;gap:14px}
     .member-row{min-height:190px;align-items:stretch}
-    .profile{min-width:0;display:flex;align-items:center;gap:14px;padding:12px 0}
+    .profile{min-width:0;display:flex;align-items:center;justify-content:center;padding:8px 0}
     .profile-photo,.impression-photo{position:relative;overflow:hidden;background:linear-gradient(135deg,#f1f1f1,#fafafa)}
-    .profile-photo{flex:0 0 76px;width:76px;height:76px;border-radius:50%}
+    .profile-photo{flex:0 0 132px;width:132px;height:132px;border-radius:10px}
     .profile-photo img,.impression-photo img{width:100%;height:100%;display:block;object-fit:cover}
     .profile-placeholder,.photo-placeholder{position:absolute;inset:0;display:grid;place-items:center;color:#b4b4b4;font-weight:800;user-select:none}
-    .profile-placeholder{font-size:22px}
+    .profile-placeholder{font-size:28px}
     .profile-info{min-width:0}
-    .member-name{font-size:18px;font-weight:850;letter-spacing:-.045em;white-space:nowrap}
-    .group-name{margin-top:4px;color:#999;font-size:12px;font-weight:600}
+    .member-name{display:none}
+    .group-name{display:none}
     .impression{position:relative;min-width:0;min-height:190px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fafafa}
     .impression-photo{position:absolute;inset:0}
     .photo-placeholder{flex-direction:column;gap:5px;color:#c3c3c3;font-size:13px;font-weight:700}
@@ -61,11 +61,11 @@
       .card-name{left:18px;bottom:18px;font-size:20px}
       .card-arrow{right:17px;top:16px;font-size:18px}
       .table-title{padding:26px 0 28px}
-      .table-head,.member-row{grid-template-columns:74px minmax(0,1fr) minmax(0,1fr);gap:8px}
+      .table-head,.member-row{grid-template-columns:100px minmax(0,1fr) minmax(0,1fr);gap:8px}
       .head-label{font-size:13px}.head-label small{font-size:8px}
       .member-row{min-height:150px}
       .profile{display:block;padding:0;text-align:center}
-      .profile-photo{width:60px;height:60px;margin:8px auto}
+      .profile-photo{width:82px;height:82px;margin:8px auto}
       .member-name{font-size:13px;white-space:normal;line-height:1.2}
       .group-name{display:none}
       .impression{min-height:150px}
@@ -80,7 +80,7 @@
         <div>
           <p class="eyebrow">FIRST IMPRESSION</p>
           <h1>첫인상표</h1>
-          <p class="home-sub">그룹을 선택해서 멤버들의 첫인상과 현인상을 기록해보세요.</p>
+          
         </div>
       </header>
       <div class="group-grid" id="groupGrid"></div>
