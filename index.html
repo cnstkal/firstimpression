@@ -196,6 +196,28 @@
       noResult.hidden = filtered.length !== 0;
     }
 
+    async function getWikiPhoto(groupName, memberName) {
+      const key = "wikiProfile:" + groupName + ":" + memberName;
+      const cached = localStorage.getItem(key);
+      if (cached) return cached === "NONE" ? "" : cached;
+
+      const query = encodeURIComponent(groupName + " " + memberName);
+      const url = "https://ko.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=" + query +
+        "&gsrnamespace=0&gsrlimit=3&prop=pageimages&piprop=thumbnail&pithumbsize=500&format=json&origin=*";
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const pages = Object.values(data.query?.pages || {});
+        const page = pages.find(p => p.thumbnail?.source);
+        const image = page?.thumbnail?.source || "";
+        localStorage.setItem(key, image || "NONE");
+        return image;
+      } catch (error) {
+        return "";
+      }
+    }
+
     function makePhoto(groupId, memberIndex, type, title, savedImage) {
       const box = document.createElement("div");
       box.className = "impression";
@@ -274,6 +296,17 @@
             profileImg.style.display = "none";
             profilePlaceholder.style.display = "grid";
           };
+        } else {
+          getWikiPhoto(group.name, name).then(src => {
+            if (!src) return;
+            profileImg.src = src;
+            profileImg.style.display = "block";
+            profilePlaceholder.style.display = "none";
+            profileImg.onerror = () => {
+              profileImg.style.display = "none";
+              profilePlaceholder.style.display = "grid";
+            };
+          });
         }
 
         profilePhoto.append(profileImg, profilePlaceholder);
