@@ -45,6 +45,7 @@
     .profile-photo,.impression-photo{position:relative;overflow:hidden;background:linear-gradient(135deg,#f1f1f1,#fafafa)}
     .profile-photo{width:100%;height:100%;border-radius:10px}
     .profile-photo img,.impression-photo img{width:100%;height:100%;display:block;object-fit:cover}
+    .profile-photo img.concept-crop{position:absolute;width:100%;height:100%;object-fit:cover}
     .profile-placeholder,.photo-placeholder{position:absolute;inset:0;display:grid;place-items:center;color:#b4b4b4;font-weight:800;user-select:none}
     .profile-placeholder{font-size:32px}
     .profile-info{min-width:0}
@@ -151,6 +152,15 @@
     const backBtn = document.getElementById("backBtn");
 
     function initials(name) { return name.slice(0,1); }
+    const conceptPhotos = {
+      bts: "https://garlandlyn.com/wp-content/uploads/2026/01/01-SQUARE-BOOKLET-OPEN-SILVER-BACKGROUND_2500-scaled.jpg",
+      blackpink: "https://vstatic.vietnam.vn/vietnam/resource/IMAGE/2026/02/26/1772087310720_blackpink-visual-poster-deadline-ver-bzvn-1jpg-1772082462045.jpeg",
+      aespa: "https://news.nateimg.co.kr/orgImg/ez/2026/01/15/20260115104103_2281948_1200_1800.jpg",
+      lesserafim: "https://cdn.kpopping.com/kpics/2026/04/1777191373790-i6960v-0.jpg",
+      ateez: "https://img.tf.co.kr/article/home/2026/06/02/202643331780368067.jpg",
+      riize: "https://phinf.wevpstatic.net/MjAyNjA1MzFfMjkz/MDAxNzgwMTU1MzEzOTc3.5ES_k3bBV5loprIHNapNnuaItlmMeQ7OU22Ioz0aRwg.PbchAWnXC6Bg5p8ioQ5Z5QaRKXuLkuSJs1N26OmiSkYg.JPEG/1116edf9-f011-41ef-b6af-66969e836515.jpeg?type=w670"
+    };
+
     function storageKey(groupId, memberIndex, type) {
       return "firstimpression:" + groupId + ":" + memberIndex + ":" + type;
     }
@@ -312,8 +322,21 @@
         profilePlaceholder.textContent = initials(name);
         profilePlaceholder.style.display = profile ? "none" : "grid";
 
+        const conceptSrc = conceptPhotos[group.id];
+
         if (profile) {
           profileImg.src = profile;
+          profileImg.onerror = () => {
+            profileImg.style.display = "none";
+            profilePlaceholder.style.display = "grid";
+          };
+        } else if (conceptSrc) {
+          profileImg.src = conceptSrc;
+          profileImg.style.display = "block";
+          profilePlaceholder.style.display = "none";
+          profileImg.classList.add("concept-crop");
+          profileImg.dataset.memberIndex = index;
+          profileImg.dataset.groupId = group.id;
           profileImg.onerror = () => {
             profileImg.style.display = "none";
             profilePlaceholder.style.display = "grid";
