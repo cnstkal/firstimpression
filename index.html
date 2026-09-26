@@ -6,422 +6,172 @@
   <title>첫인상표</title>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
-    :root {
-      --bg: #ffffff;
-      --text: #111111;
-      --muted: #8a8a8a;
-      --line: #e8e8e8;
-      --soft: #f5f5f5;
-      --accent: #111111;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: "Pretendard", sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
-    button, input { font: inherit; }
-
-    .wrap {
-      width: min(1440px, calc(100% - 40px));
-      margin: 0 auto;
-      padding: 42px 0 80px;
-    }
-
-    header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 34px;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: clamp(38px, 5vw, 72px);
-      line-height: .95;
-      letter-spacing: -0.065em;
-      font-weight: 900;
-    }
-
-    .brand p {
-      margin: 12px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      letter-spacing: -0.02em;
-    }
-
-    .group-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 38px;
-    }
-
-    .group-btn {
-      appearance: none;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: #555;
-      border-radius: 999px;
-      padding: 9px 15px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .18s ease;
-    }
-    .group-btn:hover { border-color: #aaa; color: #111; }
-    .group-btn.active {
-      background: #111;
-      color: #fff;
-      border-color: #111;
-    }
-
-    .table-head,
-    .member-row {
-      display: grid;
-      grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr);
-      gap: 18px;
-    }
-
-    .table-head {
-      align-items: end;
-      margin-bottom: 12px;
-      padding: 0 0 8px;
-      border-bottom: 2px solid #111;
-    }
-
-    .head-label {
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-    }
-    .head-label small {
-      display: block;
-      margin-top: 2px;
-      color: #aaa;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .02em;
-    }
-
-    #members {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .member-row {
-      min-height: 190px;
-      align-items: stretch;
-    }
-
-    .profile {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 0;
-    }
-
-    .profile-photo,
-    .impression-photo {
-      position: relative;
-      overflow: hidden;
-      background:
-        linear-gradient(135deg, #f1f1f1, #fafafa);
-    }
-
-    .profile-photo {
-      flex: 0 0 76px;
-      width: 76px;
-      height: 76px;
-      border-radius: 50%;
-    }
-
-    .profile-photo img,
-    .impression-photo img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-    }
-
-    .profile-placeholder,
-    .photo-placeholder {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      color: #b4b4b4;
-      font-weight: 800;
-      user-select: none;
-    }
-
-    .profile-placeholder {
-      font-size: 22px;
-    }
-
-    .profile-info {
-      min-width: 0;
-    }
-    .member-name {
-      font-size: 18px;
-      font-weight: 850;
-      letter-spacing: -0.045em;
-      white-space: nowrap;
-    }
-    .group-name {
-      margin-top: 4px;
-      color: #999;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .impression {
-      position: relative;
-      min-width: 0;
-      min-height: 190px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      overflow: hidden;
-      background: #fafafa;
-    }
-
-    .impression-photo {
-      position: absolute;
-      inset: 0;
-    }
-
-    .photo-placeholder {
-      flex-direction: column;
-      gap: 5px;
-      color: #c3c3c3;
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .photo-placeholder span {
-      font-size: 10px;
-      font-weight: 500;
-      color: #aaa;
-    }
-
-    .upload-label {
-      position: absolute;
-      right: 9px;
-      bottom: 9px;
-      z-index: 2;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.92);
-      border: 1px solid rgba(0,0,0,.1);
-      color: #111;
-      font-size: 17px;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,.08);
-    }
-    .upload-label:hover { transform: scale(1.05); }
-    .upload-input { display: none; }
-
-    .empty {
-      padding: 70px 20px;
-      text-align: center;
-      color: #aaa;
-      border: 1px dashed #ddd;
-      border-radius: 14px;
-    }
-
-    .footer-note {
-      margin-top: 22px;
-      color: #aaa;
-      font-size: 12px;
-      line-height: 1.6;
-    }
-
-    @media (max-width: 760px) {
-      .wrap {
-        width: min(100% - 24px, 680px);
-        padding-top: 28px;
-      }
-      header {
-        display: block;
-        margin-bottom: 24px;
-      }
-      .group-nav {
-        margin-bottom: 28px;
-        gap: 6px;
-      }
-      .group-btn {
-        padding: 8px 12px;
-        font-size: 13px;
-      }
-
-      .table-head,
-      .member-row {
-        grid-template-columns: 74px minmax(0, 1fr) minmax(0, 1fr);
-        gap: 8px;
-      }
-
-      .table-head { gap: 8px; }
-      .head-label { font-size: 13px; }
-      .head-label small { font-size: 9px; }
-
-      .member-row { min-height: 150px; }
-      .profile {
-        display: block;
-        padding: 0;
-        text-align: center;
-      }
-      .profile-photo {
-        width: 60px;
-        height: 60px;
-        margin: 8px auto 8px;
-      }
-      .member-name {
-        font-size: 13px;
-        white-space: normal;
-        line-height: 1.2;
-      }
-      .group-name { display: none; }
-
-      .impression { min-height: 150px; }
-      .upload-label {
-        width: 26px;
-        height: 26px;
-        right: 6px;
-        bottom: 6px;
-      }
+    :root{--text:#111;--muted:#999;--line:#e8e8e8;--soft:#f7f7f7}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:#fff;color:var(--text);font-family:"Pretendard",sans-serif;-webkit-font-smoothing:antialiased}
+    button,input{font:inherit}
+    button{font-family:"Pretendard",sans-serif}
+    .wrap{width:min(1200px,calc(100% - 40px));margin:0 auto;padding:56px 0 90px}
+    .home-header{padding:28px 0 44px}
+    .eyebrow{margin:0 0 10px;font-size:12px;font-weight:800;letter-spacing:.12em;color:#aaa}
+    h1{margin:0;font-size:clamp(44px,7vw,82px);line-height:.95;letter-spacing:-.075em;font-weight:900}
+    .home-sub{margin:18px 0 0;color:#888;font-size:14px;letter-spacing:-.025em}
+    .group-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .group-card{position:relative;min-height:180px;padding:28px 30px;background:#fff;border:1px solid var(--line);border-radius:16px;text-align:left;cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease;overflow:hidden}
+    .group-card:hover{transform:translateY(-3px);border-color:#111;background:#fafafa}
+    .card-number{display:block;color:#aaa;font-size:12px;font-weight:700;letter-spacing:.08em}
+    .card-name{position:absolute;left:30px;bottom:27px;font-size:clamp(24px,3vw,40px);font-weight:900;letter-spacing:-.06em}
+    .card-arrow{position:absolute;right:28px;top:25px;font-size:24px;font-weight:400;transition:transform .18s}
+    .group-card:hover .card-arrow{transform:translate(3px,-3px)}
+    .table-view{padding-top:8px}
+    .back-btn{appearance:none;border:0;background:transparent;padding:8px 0;color:#888;font-size:13px;font-weight:700;cursor:pointer}
+    .back-btn:hover{color:#111}
+    .table-title{padding:35px 0 38px}
+    .table-title h1{font-size:clamp(38px,6vw,68px)}
+    .table-head,.member-row{display:grid;grid-template-columns:180px minmax(0,1fr) minmax(0,1fr);gap:18px}
+    .table-head{align-items:end;margin-bottom:12px;padding:0 0 9px;border-bottom:2px solid #111}
+    .head-label{font-size:16px;font-weight:800;letter-spacing:-.04em}
+    .head-label small{display:block;margin-top:2px;color:#aaa;font-size:10px;font-weight:600;letter-spacing:.02em}
+    #members{display:flex;flex-direction:column;gap:14px}
+    .member-row{min-height:190px;align-items:stretch}
+    .profile{min-width:0;display:flex;align-items:center;gap:14px;padding:12px 0}
+    .profile-photo,.impression-photo{position:relative;overflow:hidden;background:linear-gradient(135deg,#f1f1f1,#fafafa)}
+    .profile-photo{flex:0 0 76px;width:76px;height:76px;border-radius:50%}
+    .profile-photo img,.impression-photo img{width:100%;height:100%;display:block;object-fit:cover}
+    .profile-placeholder,.photo-placeholder{position:absolute;inset:0;display:grid;place-items:center;color:#b4b4b4;font-weight:800;user-select:none}
+    .profile-placeholder{font-size:22px}
+    .profile-info{min-width:0}
+    .member-name{font-size:18px;font-weight:850;letter-spacing:-.045em;white-space:nowrap}
+    .group-name{margin-top:4px;color:#999;font-size:12px;font-weight:600}
+    .impression{position:relative;min-width:0;min-height:190px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fafafa}
+    .impression-photo{position:absolute;inset:0}
+    .photo-placeholder{flex-direction:column;gap:5px;color:#c3c3c3;font-size:13px;font-weight:700}
+    .photo-placeholder b{font-size:25px;font-weight:400;line-height:1}
+    .photo-placeholder span{font-size:10px;font-weight:500;color:#aaa}
+    .upload-label{position:absolute;right:9px;bottom:9px;z-index:2;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.1);color:#111;font-size:17px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .upload-label:hover{transform:scale(1.05)}
+    .upload-input{display:none}
+    [hidden]{display:none!important}
+    @media(max-width:760px){
+      .wrap{width:min(100% - 24px,680px);padding-top:28px}
+      .home-header{padding:18px 0 30px}
+      .group-grid{gap:8px}
+      .group-card{min-height:135px;padding:18px;border-radius:12px}
+      .card-name{left:18px;bottom:18px;font-size:20px}
+      .card-arrow{right:17px;top:16px;font-size:18px}
+      .table-title{padding:26px 0 28px}
+      .table-head,.member-row{grid-template-columns:74px minmax(0,1fr) minmax(0,1fr);gap:8px}
+      .head-label{font-size:13px}.head-label small{font-size:8px}
+      .member-row{min-height:150px}
+      .profile{display:block;padding:0;text-align:center}
+      .profile-photo{width:60px;height:60px;margin:8px auto}
+      .member-name{font-size:13px;white-space:normal;line-height:1.2}
+      .group-name{display:none}
+      .impression{min-height:150px}
+      .upload-label{width:26px;height:26px;right:6px;bottom:6px}
     }
   </style>
 </head>
 <body>
   <main class="wrap">
-    <header>
-      <div class="brand">
-        <h1>첫인상표</h1>
-        <p>아이돌 멤버를 보고 처음 느낀 이미지와 지금의 이미지를 비교해보세요.</p>
-      </div>
-    </header>
-
-    <nav class="group-nav" id="groupNav" aria-label="그룹 선택"></nav>
-
-    <section aria-label="첫인상표">
-      <div class="table-head">
-        <div class="head-label">멤버<small>PROFILE</small></div>
-        <div class="head-label">첫인상<small>FIRST IMPRESSION</small></div>
-        <div class="head-label">현인상<small>CURRENT IMPRESSION</small></div>
-      </div>
-      <div id="members"></div>
+    <section id="homeView" class="home-view">
+      <header class="home-header">
+        <div>
+          <p class="eyebrow">FIRST IMPRESSION</p>
+          <h1>첫인상표</h1>
+          <p class="home-sub">그룹을 선택해서 멤버들의 첫인상과 현인상을 기록해보세요.</p>
+        </div>
+      </header>
+      <div class="group-grid" id="groupGrid"></div>
     </section>
 
-    <p class="footer-note">
-      사진은 각 칸의 + 버튼으로 임시 미리보기를 넣을 수 있습니다. 실제 프로필 사진은
-      아래 JavaScript의 <b>profile</b> 경로에 이미지를 넣으면 됩니다.
-    </p>
+    <section id="tableView" class="table-view" hidden>
+      <button class="back-btn" id="backBtn" type="button">← 그룹 목록</button>
+      <header class="table-title">
+        <div>
+          <p class="eyebrow" id="selectedEyebrow">FIRST IMPRESSION</p>
+          <h1 id="selectedGroupName"></h1>
+        </div>
+      </header>
+
+      <section aria-label="첫인상표">
+        <div class="table-head">
+          <div class="head-label">멤버<small>PROFILE</small></div>
+          <div class="head-label">첫인상<small>FIRST IMPRESSION</small></div>
+          <div class="head-label">현인상<small>CURRENT IMPRESSION</small></div>
+        </div>
+        <div id="members"></div>
+      </section>
+    </section>
   </main>
 
   <script>
-    /*
-      사진 넣는 방법
-      1. assets 폴더를 만들고 이미지를 넣습니다.
-      2. 아래 각 멤버의 profile 값을 예: "assets/profiles/bts/rm.jpg" 로 바꿉니다.
-      3. 첫인상/현인상 사진은 사이트에서 + 버튼으로 바로 미리볼 수 있습니다.
-         (브라우저 로컬 저장소에 저장되므로 같은 브라우저에서는 새로고침 후에도 유지됩니다.)
-    */
-
     const groups = [
-      {
-        id: "bts", name: "BTS",
-        members: [
-          ["RM", ""], ["진", ""], ["슈가", ""], ["제이홉", ""],
-          ["지민", ""], ["뷔", ""], ["정국", ""]
-        ]
-      },
-      {
-        id: "blackpink", name: "BLACKPINK",
-        members: [["지수", ""], ["제니", ""], ["로제", ""], ["리사", ""]]
-      },
-      {
-        id: "seventeen", name: "SEVENTEEN",
-        members: [
-          ["에스쿱스", ""], ["정한", ""], ["조슈아", ""], ["준", ""],
-          ["호시", ""], ["원우", ""], ["우지", ""], ["디에잇", ""],
-          ["민규", ""], ["도겸", ""], ["승관", ""], ["버논", ""], ["디노", ""]
-        ]
-      },
-      {
-        id: "twice", name: "TWICE",
-        members: [
-          ["나연", ""], ["정연", ""], ["모모", ""], ["사나", ""],
-          ["지효", ""], ["미나", ""], ["다현", ""], ["채영", ""], ["쯔위", ""]
-        ]
-      },
-      {
-        id: "straykids", name: "Stray Kids",
-        members: [
-          ["방찬", ""], ["리노", ""], ["창빈", ""], ["현진", ""],
-          ["한", ""], ["필릭스", ""], ["승민", ""], ["아이엔", ""]
-        ]
-      },
-      {
-        id: "ive", name: "IVE",
-        members: [["안유진", ""], ["가을", ""], ["레이", ""], ["장원영", ""], ["리즈", ""], ["이서", ""]]
-      },
-      {
-        id: "aespa", name: "aespa",
-        members: [["카리나", ""], ["윈터", ""], ["지젤", ""], ["닝닝", ""]]
-      },
-      {
-        id: "lesserafim", name: "LE SSERAFIM",
-        members: [["사쿠라", ""], ["김채원", ""], ["허윤진", ""], ["카즈하", ""], ["홍은채", ""]]
-      },
-      {
-        id: "ateez", name: "ATEEZ",
-        members: [
-          ["홍중", ""], ["성화", ""], ["윤호", ""], ["여상", ""],
-          ["산", ""], ["민기", ""], ["우영", ""], ["종호", ""]
-        ]
-      },
-      {
-        id: "riize", name: "RIIZE",
-        members: [["쇼타로", ""], ["은석", ""], ["성찬", ""], ["원빈", ""], ["소희", ""], ["앤톤", ""]]
-      }
+      { id:"bts", name:"BTS", members:[["RM",""],["진",""],["슈가",""],["제이홉",""],["지민",""],["뷔",""],["정국",""]] },
+      { id:"blackpink", name:"BLACKPINK", members:[["지수",""],["제니",""],["로제",""],["리사",""]] },
+      { id:"seventeen", name:"SEVENTEEN", members:[["에스쿱스",""],["정한",""],["조슈아",""],["준",""],["호시",""],["원우",""],["우지",""],["디에잇",""],["민규",""],["도겸",""],["승관",""],["버논",""],["디노",""]] },
+      { id:"twice", name:"TWICE", members:[["나연",""],["정연",""],["모모",""],["사나",""],["지효",""],["미나",""],["다현",""],["채영",""],["쯔위",""]] },
+      { id:"straykids", name:"Stray Kids", members:[["방찬",""],["리노",""],["창빈",""],["현진",""],["한",""],["필릭스",""],["승민",""],["아이엔",""]] },
+      { id:"ive", name:"IVE", members:[["안유진",""],["가을",""],["레이",""],["장원영",""],["리즈",""],["이서",""]] },
+      { id:"aespa", name:"aespa", members:[["카리나",""],["윈터",""],["지젤",""],["닝닝",""]] },
+      { id:"lesserafim", name:"LE SSERAFIM", members:[["사쿠라",""],["김채원",""],["허윤진",""],["카즈하",""],["홍은채",""]] },
+      { id:"ateez", name:"ATEEZ", members:[["홍중",""],["성화",""],["윤호",""],["여상",""],["산",""],["민기",""],["우영",""],["종호",""]] },
+      { id:"riize", name:"RIIZE", members:[["쇼타로",""],["은석",""],["성찬",""],["원빈",""],["소희",""],["앤톤",""]] }
     ];
 
-    const nav = document.getElementById("groupNav");
+    const homeView = document.getElementById("homeView");
+    const tableView = document.getElementById("tableView");
+    const groupGrid = document.getElementById("groupGrid");
     const membersEl = document.getElementById("members");
-    let activeGroup = groups[0].id;
+    const selectedGroupName = document.getElementById("selectedGroupName");
+    const backBtn = document.getElementById("backBtn");
 
-    function initials(name) {
-      return name.length > 1 ? name.slice(0, 1) : name;
-    }
-
+    function initials(name) { return name.slice(0,1); }
     function storageKey(groupId, memberIndex, type) {
       return "firstimpression:" + groupId + ":" + memberIndex + ":" + type;
+    }
+
+    function openGroup(group) {
+      selectedGroupName.textContent = group.name;
+      renderMembers(group);
+      homeView.hidden = true;
+      tableView.hidden = false;
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    function closeGroup() {
+      tableView.hidden = true;
+      homeView.hidden = false;
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    function renderHome() {
+      groupGrid.innerHTML = "";
+      groups.forEach((group, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "group-card";
+        button.innerHTML =
+          '<span class="card-number">' + String(index + 1).padStart(2,"0") + '</span>' +
+          '<span class="card-name">' + group.name + '</span>' +
+          '<span class="card-arrow">↗</span>';
+        button.addEventListener("click", () => openGroup(group));
+        groupGrid.appendChild(button);
+      });
     }
 
     function makePhoto(groupId, memberIndex, type, title, savedImage) {
       const box = document.createElement("div");
       box.className = "impression";
-
       const photo = document.createElement("div");
       photo.className = "impression-photo";
-
       const img = document.createElement("img");
       img.alt = title;
       img.style.display = "none";
-
       const placeholder = document.createElement("div");
       placeholder.className = "photo-placeholder";
-      placeholder.innerHTML = "+" + "<span>" + title + " 사진 추가</span>";
+      placeholder.innerHTML = '<b>+</b><span>' + title + ' 사진 추가</span>';
 
       const input = document.createElement("input");
       input.className = "upload-input";
@@ -451,44 +201,20 @@
         const reader = new FileReader();
         reader.onload = () => {
           const src = reader.result;
-          try {
-            localStorage.setItem(storageKey(groupId, memberIndex, type), src);
-          } catch (e) {
-            console.warn("이미지가 너무 커서 로컬 저장에 실패했습니다.", e);
-          }
+          try { localStorage.setItem(storageKey(groupId, memberIndex, type), src); } catch(e) {}
           show(src);
         };
         reader.readAsDataURL(file);
       });
 
       if (savedImage) show(savedImage);
-
       photo.append(img, placeholder);
       box.append(photo, label);
       return box;
     }
 
-    function renderNav() {
-      nav.innerHTML = "";
-      groups.forEach(group => {
-        const button = document.createElement("button");
-        button.className = "group-btn" + (group.id === activeGroup ? " active" : "");
-        button.textContent = group.name;
-        button.type = "button";
-        button.addEventListener("click", () => {
-          activeGroup = group.id;
-          renderNav();
-          renderMembers();
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-        nav.appendChild(button);
-      });
-    }
-
-    function renderMembers() {
-      const group = groups.find(g => g.id === activeGroup);
+    function renderMembers(group) {
       membersEl.innerHTML = "";
-
       group.members.forEach(([name, profile], index) => {
         const row = document.createElement("article");
         row.className = "member-row";
@@ -498,10 +224,15 @@
 
         const profilePhoto = document.createElement("div");
         profilePhoto.className = "profile-photo";
-
         const profileImg = document.createElement("img");
         profileImg.alt = name + " 프로필";
         profileImg.style.display = profile ? "block" : "none";
+
+        const profilePlaceholder = document.createElement("div");
+        profilePlaceholder.className = "profile-placeholder";
+        profilePlaceholder.textContent = initials(name);
+        profilePlaceholder.style.display = profile ? "none" : "grid";
+
         if (profile) {
           profileImg.src = profile;
           profileImg.onerror = () => {
@@ -510,34 +241,27 @@
           };
         }
 
-        const profilePlaceholder = document.createElement("div");
-        profilePlaceholder.className = "profile-placeholder";
-        profilePlaceholder.textContent = initials(name);
-        profilePlaceholder.style.display = profile ? "none" : "grid";
-
         profilePhoto.append(profileImg, profilePlaceholder);
 
         const info = document.createElement("div");
         info.className = "profile-info";
         info.innerHTML = '<div class="member-name">' + name + '</div><div class="group-name">' + group.name + '</div>';
-
         profileCol.append(profilePhoto, info);
 
-        const firstSaved = localStorage.getItem(storageKey(group.id, index, "first"));
-        const currentSaved = localStorage.getItem(storageKey(group.id, index, "current"));
+        const firstSaved = localStorage.getItem(storageKey(group.id,index,"first"));
+        const currentSaved = localStorage.getItem(storageKey(group.id,index,"current"));
 
         row.append(
           profileCol,
-          makePhoto(group.id, index, "first", "첫인상", firstSaved),
-          makePhoto(group.id, index, "current", "현인상", currentSaved)
+          makePhoto(group.id,index,"first","첫인상",firstSaved),
+          makePhoto(group.id,index,"current","현인상",currentSaved)
         );
-
         membersEl.appendChild(row);
       });
     }
 
-    renderNav();
-    renderMembers();
+    backBtn.addEventListener("click", closeGroup);
+    renderHome();
   </script>
 </body>
 </html>
