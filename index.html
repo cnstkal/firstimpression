@@ -206,22 +206,22 @@
     }
 
     async function getWikiPhoto(groupName, memberName) {
-      const key = "wikiProfile:v3:" + groupName + ":" + memberName;
+      const key = "wikiProfile:v4:" + groupName + ":" + memberName;
       const cached = localStorage.getItem(key);
       if (cached) return cached === "NONE" ? "" : cached;
 
       // 그룹명과 멤버명을 함께 검색하면 그룹 대표사진이 잡힐 수 있으므로
       // 멤버 개인 문서를 먼저 정확하게 검색한다.
       const searches = [
-        memberName,
-        memberName + " " + groupName
+        memberName + " " + groupName,
+        memberName
       ];
 
       try {
         for (const term of searches) {
           const query = encodeURIComponent(term);
           const url = "https://ko.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=" + query +
-            "&gsrnamespace=0&gsrlimit=10&prop=pageimages&piprop=thumbnail&pithumbsize=500&format=json&origin=*";
+            "&gsrnamespace=0&gsrlimit=20&prop=pageimages&piprop=thumbnail&pithumbsize=500&format=json&origin=*";
           const response = await fetch(url);
           const data = await response.json();
           const pages = Object.values(data.query?.pages || {});
@@ -235,6 +235,11 @@
             return title === normalizedMember ||
               title.startsWith(normalizedMember) ||
               title.includes(normalizedMember);
+          }).sort((a,b) => {
+            const at = (a.title || "").replace(/\s+/g, "").toLowerCase();
+            const bt = (b.title || "").replace(/\s+/g, "").toLowerCase();
+            const score = t => t === normalizedMember ? 0 : (t.startsWith(normalizedMember) ? 1 : 2);
+            return score(at) - score(bt);
           });
 
           if (candidates.length) {
