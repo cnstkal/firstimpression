@@ -35,9 +35,9 @@
     .back-btn:hover{color:#111}
     .table-title{padding:35px 0 38px}
     .table-title h1{font-size:clamp(38px,6vw,68px)}
-    .table-head,.member-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);column-gap:28px}
+    .table-head,.member-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);column-gap:40px}
     .table-head{align-items:end;margin-bottom:10px;padding:0 0 7px}
-    .table-head > :nth-child(3),.member-row > :nth-child(3){margin-left:10px}
+    .table-head > :nth-child(3),.member-row > :nth-child(3){margin-left:20px}
     .head-label{font-size:16px;font-weight:800;letter-spacing:-.04em}
     #members{display:flex;flex-direction:column;gap:14px}
     .member-row{height:260px;align-items:stretch}
@@ -70,9 +70,9 @@
       .group-card{min-height:135px;padding:18px;border-radius:12px}
       .card-name{font-size:20px}
       .table-title{padding:26px 0 28px}
-      .table-head,.member-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);column-gap:10px}
+      .table-head,.member-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);column-gap:14px}
       .head-label{font-size:14px}
-      .table-head > :nth-child(3),.member-row > :nth-child(3){margin-left:6px}
+      .table-head > :nth-child(3),.member-row > :nth-child(3){margin-left:10px}
       .member-row{height:150px}
       .impression{height:150px}
       .profile-photo{height:150px}
@@ -156,6 +156,8 @@
     }
 
     function openGroup(group) {
+      localStorage.setItem("firstimpression:view", "table");
+      localStorage.setItem("firstimpression:selectedGroup", group.id);
       selectedGroupName.textContent = group.name;
       renderMembers(group);
       homeView.hidden = true;
@@ -164,6 +166,8 @@
     }
 
     function closeGroup() {
+      localStorage.setItem("firstimpression:view", "home");
+      localStorage.removeItem("firstimpression:selectedGroup");
       tableView.hidden = true;
       homeView.hidden = false;
       window.scrollTo({top:0, behavior:"smooth"});
@@ -362,6 +366,19 @@
     });
 
     renderHome();
+
+    // 새로고침해도 현재 보고 있던 화면을 그대로 유지
+    const savedView = localStorage.getItem("firstimpression:view");
+    const savedGroupId = localStorage.getItem("firstimpression:selectedGroup");
+    if (savedView === "table" && savedGroupId) {
+      const savedGroup = groups.find(group => group.id === savedGroupId);
+      if (savedGroup) {
+        selectedGroupName.textContent = savedGroup.name;
+        renderMembers(savedGroup);
+        homeView.hidden = true;
+        tableView.hidden = false;
+      }
+    }
   </script>
 </body>
 </html>
