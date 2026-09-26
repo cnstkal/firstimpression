@@ -194,15 +194,6 @@
     const saveBtn = document.getElementById("saveBtn");
 
     function initials(name) { return name.slice(0,1); }
-    const conceptPhotos = {
-      bts: "https://garlandlyn.com/wp-content/uploads/2026/01/01-SQUARE-BOOKLET-OPEN-SILVER-BACKGROUND_2500-scaled.jpg",
-      blackpink: "https://vstatic.vietnam.vn/vietnam/resource/IMAGE/2026/02/26/1772087310720_blackpink-visual-poster-deadline-ver-bzvn-1jpg-1772082462045.jpeg",
-      aespa: "https://news.nateimg.co.kr/orgImg/ez/2026/01/15/20260115104103_2281948_1200_1800.jpg",
-      lesserafim: "https://cdn.kpopping.com/kpics/2026/04/1777191373790-i6960v-0.jpg",
-      ateez: "https://img.tf.co.kr/article/home/2026/06/02/202643331780368067.jpg",
-      riize: "https://phinf.wevpstatic.net/MjAyNjA1MzFfMjkz/MDAxNzgwMTU1MzEzOTc3.5ES_k3bBV5loprIHNapNnuaItlmMeQ7OU22Ioz0aRwg.PbchAWnXC6Bg5p8ioQ5Z5QaRKXuLkuSJs1N26OmiSkYg.JPEG/1116edf9-f011-41ef-b6af-66969e836515.jpeg?type=w670"
-    };
-
     function storageKey(groupId, memberIndex, type) {
       return "firstimpression:" + groupId + ":" + memberIndex + ":" + type;
     }
@@ -246,57 +237,6 @@
         groupGrid.appendChild(button);
       });
       noResult.hidden = filtered.length !== 0;
-    }
-
-    async function getWikiPhoto(groupName, memberName) {
-      const key = "wikiProfile:v4:" + groupName + ":" + memberName;
-      const cached = localStorage.getItem(key);
-      if (cached) return cached === "NONE" ? "" : cached;
-
-      // 그룹명과 멤버명을 함께 검색하면 그룹 대표사진이 잡힐 수 있으므로
-      // 멤버 개인 문서를 먼저 정확하게 검색한다.
-      const searches = [
-        memberName + " " + groupName,
-        memberName
-      ];
-
-      try {
-        for (const term of searches) {
-          const query = encodeURIComponent(term);
-          const url = "https://ko.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=" + query +
-            "&gsrnamespace=0&gsrlimit=20&prop=pageimages&piprop=thumbnail&pithumbsize=500&format=json&origin=*";
-          const response = await fetch(url);
-          const data = await response.json();
-          const pages = Object.values(data.query?.pages || {});
-          const normalizedMember = memberName.replace(/\s+/g, "").toLowerCase();
-          const normalizedGroup = groupName.replace(/\s+/g, "").toLowerCase();
-
-          const candidates = pages.filter(page => {
-            if (!page.thumbnail?.source) return false;
-            const title = (page.title || "").replace(/\s+/g, "").toLowerCase();
-            if (title === normalizedGroup || title.includes(normalizedGroup)) return false;
-            return title === normalizedMember ||
-              title.startsWith(normalizedMember) ||
-              title.includes(normalizedMember);
-          }).sort((a,b) => {
-            const at = (a.title || "").replace(/\s+/g, "").toLowerCase();
-            const bt = (b.title || "").replace(/\s+/g, "").toLowerCase();
-            const score = t => t === normalizedMember ? 0 : (t.startsWith(normalizedMember) ? 1 : 2);
-            return score(at) - score(bt);
-          });
-
-          if (candidates.length) {
-            const image = candidates[0].thumbnail.source;
-            localStorage.setItem(key, image);
-            return image;
-          }
-        }
-
-        localStorage.setItem(key, "NONE");
-        return "";
-      } catch (error) {
-        return "";
-      }
     }
 
     function makePhoto(groupId, memberIndex, type, title, savedImage) {
@@ -377,7 +317,7 @@
         const memberCard = document.createElement("div");
         memberCard.className = "export-member";
         const sources = [
-          document.querySelectorAll("#members .profile-photo img")[index]?.src || "",
+          document.querySelectorAll("#members .profile-photo img")[index]?.src || localStorage.getItem(storageKey(group.id,index,"profile")) || "",
           localStorage.getItem(storageKey(group.id,index,"first")) || "",
           localStorage.getItem(storageKey(group.id,index,"current")) || ""
         ];
@@ -427,34 +367,49 @@
         profilePhoto.className = "profile-photo";
         const profileImg = document.createElement("img");
         profileImg.alt = name + " 프로필";
-        profileImg.crossOrigin = "anonymous";
         profileImg.style.display = profile ? "block" : "none";
 
         const profilePlaceholder = document.createElement("div");
         profilePlaceholder.className = "profile-placeholder";
-        profilePlaceholder.textContent = initials(name);
+        profilePlaceholder.textContent = "+";
         profilePlaceholder.style.display = profile ? "none" : "grid";
 
-        if (profile) {
-          profileImg.src = profile;
-          profileImg.onerror = () => {
+        const profileInput = document.createElement("input");
+        profileInput.className = "upload-input";
+        profileInput.type = "file";
+        profileInput.accept = "image/*";
+
+        const profileLabel = document.createElement("label");
+        profileLabel.className = "upload-label";
+        profileLabel.title = "프로필 사진 추가";
+        profileLabel.textContent = "+";
+        profileLabel.appendChild(profileInput);
+
+        function showProfile(src) {
+          if (!src) {
             profileImg.style.display = "none";
             profilePlaceholder.style.display = "grid";
-          };
-        } else {
-          getWikiPhoto(group.name, name).then(src => {
-            if (!src) return;
-            profileImg.src = src;
-            profileImg.style.display = "block";
-            profilePlaceholder.style.display = "none";
-            profileImg.onerror = () => {
-              profileImg.style.display = "none";
-              profilePlaceholder.style.display = "grid";
-            };
-          });
+            return;
+          }
+          profileImg.src = src;
+          profileImg.style.display = "block";
+          profilePlaceholder.style.display = "none";
         }
 
-        profilePhoto.append(profileImg, profilePlaceholder);
+        profileInput.addEventListener("change", () => {
+          const file = profileInput.files && profileInput.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            const src = reader.result;
+            try { localStorage.setItem(storageKey(group.id,index,"profile"), src); } catch(e) {}
+            showProfile(src);
+          };
+          reader.readAsDataURL(file);
+        });
+
+        showProfile(profile);
+        profilePhoto.append(profileImg, profilePlaceholder, profileLabel);
 
         const info = document.createElement("div");
         info.className = "profile-info";
@@ -523,6 +478,11 @@
     });
 
     renderHome();
+
+    // 자동으로 불러오던 프로필 사진 캐시를 모두 비우고, 사용자가 직접 올린 사진만 사용
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith("wikiProfile:v")) localStorage.removeItem(key);
+    });
 
     // 새로고침해도 현재 보고 있던 화면을 그대로 유지
     const savedView = localStorage.getItem("firstimpression:view");
