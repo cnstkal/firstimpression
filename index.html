@@ -58,6 +58,32 @@
     .upload-label{position:absolute;right:9px;bottom:9px;z-index:2;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.1);color:#111;font-size:17px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
     .upload-label:hover{transform:scale(1.05)}
     .no-result{padding:70px 0;text-align:center;color:#aaa;font-size:14px}
+    .next-wrap{display:flex;justify-content:center;padding:42px 0 20px}
+    .next-btn{border:0;background:#111;color:#fff;border-radius:999px;padding:13px 28px;font-size:14px;font-weight:800;cursor:pointer}
+    .next-btn:hover{opacity:.86}
+    .export-view{position:fixed;inset:0;z-index:100;background:#fff;overflow:auto;display:none}
+    .export-toolbar{position:sticky;top:0;z-index:2;display:flex;justify-content:flex-end;padding:14px 18px;background:rgba(255,255,255,.96);border-bottom:1px solid #eee}
+    .save-btn{border:0;background:#111;color:#fff;border-radius:999px;padding:10px 18px;font-size:13px;font-weight:800;cursor:pointer}
+    .export-canvas{width:min(900px,calc(100% - 32px));margin:30px auto 60px;background:#fff}
+    .export-title{margin:0 0 26px;font-size:42px;font-weight:900;letter-spacing:-.06em}
+    .export-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .export-grid .export-cell{border-radius:10px;overflow:hidden;background:#f7f7f7}
+    .export-grid .export-cell img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+    .export-grid .export-label{padding:12px 14px;font-size:13px;font-weight:800;background:#fff}
+    .export-grid .export-impression{min-height:160px;display:grid;place-items:center;color:#aaa;font-size:12px;background:#fafafa}
+    .export-grid .export-impression img{aspect-ratio:auto;height:100%;min-height:160px}
+    .export-close{margin-right:auto;border:0;background:transparent;color:#777;font-size:13px;font-weight:700;cursor:pointer}
+    .export-view.export-open{display:block}
+    @media(max-width:760px){
+      .next-wrap{padding:32px 0 16px}
+      .next-btn{width:100%;padding:13px}
+      .export-canvas{width:calc(100% - 24px);margin:18px auto 40px}
+      .export-title{font-size:30px;margin-bottom:18px}
+      .export-grid{gap:8px}
+      .export-grid .export-label{padding:8px;font-size:11px}
+      .export-grid .export-impression{min-height:110px;font-size:10px}
+      .export-grid .export-impression img{min-height:110px}
+    }
     .upload-input{display:none}
     [hidden]{display:none!important}
     @media(max-width:760px){
@@ -121,9 +147,21 @@
         </div>
         <div id="members"></div>
       </section>
+      <div class="next-wrap">
+        <button class="next-btn" id="nextBtn" type="button">다음</button>
+      </div>
     </section>
   </main>
 
+  <section id="exportView" class="export-view" aria-label="완성된 첫인상표">
+    <div class="export-toolbar">
+      <button class="export-close" id="exportClose" type="button">← 돌아가기</button>
+      <button class="save-btn" id="saveBtn" type="button">이미지로 저장</button>
+    </div>
+    <div class="export-canvas" id="exportCanvas"></div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     const groups = [
       { id:"bts", name:"BTS", gender:"male", members:[["RM",""],["진",""],["슈가",""],["제이홉",""],["지민",""],["뷔",""],["정국",""]] },
@@ -149,6 +187,11 @@
     const membersEl = document.getElementById("members");
     const selectedGroupName = document.getElementById("selectedGroupName");
     const backBtn = document.getElementById("backBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const exportView = document.getElementById("exportView");
+    const exportCanvas = document.getElementById("exportCanvas");
+    const exportClose = document.getElementById("exportClose");
+    const saveBtn = document.getElementById("saveBtn");
 
     function initials(name) { return name.slice(0,1); }
     const conceptPhotos = {
@@ -308,6 +351,50 @@
       return box;
     }
 
+    function renderExport(group) {
+      exportCanvas.innerHTML = "";
+      const title = document.createElement("h2");
+      title.className = "export-title";
+      title.textContent = group.name;
+      exportCanvas.appendChild(title);
+
+      const grid = document.createElement("div");
+      grid.className = "export-grid";
+
+      group.members.forEach(([name], index) => {
+        const profileSrc = document.querySelectorAll("#members .profile-photo img")[index]?.src || "";
+        const firstSrc = localStorage.getItem(storageKey(group.id,index,"first"));
+        const currentSrc = localStorage.getItem(storageKey(group.id,index,"current"));
+
+        const addCell = (src, label, fallback) => {
+          const cell = document.createElement("div");
+          cell.className = "export-cell";
+          if (src) {
+            const img = document.createElement("img");
+            img.src = src;
+            img.crossOrigin = "anonymous";
+            img.alt = "";
+            cell.appendChild(img);
+          } else {
+            const empty = document.createElement("div");
+            empty.className = "export-impression";
+            empty.textContent = fallback;
+            cell.appendChild(empty);
+          }
+          const labelEl = document.createElement("div");
+          labelEl.className = "export-label";
+          labelEl.textContent = label;
+          cell.appendChild(labelEl);
+          grid.appendChild(cell);
+        };
+
+        addCell(profileSrc, name, name);
+        addCell(firstSrc, "첫인상", "첫인상");
+        addCell(currentSrc, "현인상", "현인상");
+      });
+      exportCanvas.appendChild(grid);
+    }
+
     function renderMembers(group) {
       membersEl.innerHTML = "";
       group.members.forEach(([name, profile], index) => {
@@ -321,6 +408,7 @@
         profilePhoto.className = "profile-photo";
         const profileImg = document.createElement("img");
         profileImg.alt = name + " 프로필";
+        profileImg.crossOrigin = "anonymous";
         profileImg.style.display = profile ? "block" : "none";
 
         const profilePlaceholder = document.createElement("div");
@@ -367,6 +455,50 @@
     }
 
     backBtn.addEventListener("click", closeGroup);
+
+    nextBtn.addEventListener("click", () => {
+      const group = groups.find(item => item.id === localStorage.getItem("firstimpression:selectedGroup"));
+      if (!group) return;
+      renderExport(group);
+      exportView.classList.add("export-open");
+      document.body.style.overflow = "hidden";
+    });
+
+    exportClose.addEventListener("click", () => {
+      exportView.classList.remove("export-open");
+      document.body.style.overflow = "";
+    });
+
+    saveBtn.addEventListener("click", async () => {
+      if (!window.html2canvas) {
+        alert("이미지 저장 기능을 불러오지 못했어요. 화면을 꾹 눌러 저장해주세요.");
+        return;
+      }
+      saveBtn.disabled = true;
+      saveBtn.textContent = "저장 중…";
+      try {
+        const canvas = await html2canvas(exportCanvas, {
+          backgroundColor: "#ffffff",
+          scale: Math.min(3, window.devicePixelRatio || 2),
+          useCORS: true,
+          allowTaint: false
+        });
+        canvas.toBlob(blob => {
+          if (!blob) throw new Error("blob");
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = (document.getElementById("selectedGroupName").textContent || "첫인상표") + "-첫인상표.png";
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }, "image/png");
+      } catch (e) {
+        alert("자동 저장이 안 되면 완성된 표를 꾹 눌러 이미지로 저장해주세요.");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "이미지로 저장";
+      }
+    });
 
     genderTabs.addEventListener("click", (event) => {
       const button = event.target.closest(".gender-tab");
