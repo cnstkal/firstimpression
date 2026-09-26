@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>첫인상표</title>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
@@ -185,12 +185,12 @@
 
     function renderHome() {
       groupGrid.innerHTML = "";
-      const term = searchTerm.trim().toLowerCase();
+      const term = searchTerm.trim().toLocaleLowerCase("ko-KR");
       const filtered = groups.filter(group => {
         const genderMatch = group.gender === activeGender;
         const searchMatch = !term ||
-          group.name.toLowerCase().includes(term) ||
-          group.members.some(([name]) => name.toLowerCase().includes(term));
+          group.name.toLocaleLowerCase("ko-KR").includes(term) ||
+          group.members.some(([name]) => name.toLocaleLowerCase("ko-KR").includes(term));
         return genderMatch && searchMatch;
       });
 
