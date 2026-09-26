@@ -62,32 +62,33 @@
     .next-btn,.bottom-save-btn{border:0;background:#111;color:#fff;border-radius:999px;padding:13px 28px;font-size:14px;font-weight:800;cursor:pointer}
     .bottom-save-btn{display:none}
     .next-btn:hover{opacity:.86}
-    .export-view{position:fixed;inset:0;z-index:100;background:#fff;overflow:auto;display:none}
-    .export-toolbar{position:sticky;top:0;z-index:2;display:flex;justify-content:flex-end;padding:14px 18px;background:rgba(255,255,255,.96);border-bottom:1px solid #eee}
+    .export-view{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.88);overflow:auto;display:none;padding:34px 18px}
+    .export-toolbar{position:sticky;top:-34px;z-index:2;display:flex;justify-content:flex-end;max-width:760px;margin:0 auto;padding:0 0 10px}
     .save-btn{display:none}
-    .export-canvas{width:min(760px,calc(100% - 48px));margin:20px auto 50px;background:#fff}
-    .export-title{margin:0 0 18px;font-size:34px;font-weight:900;letter-spacing:-.06em}
-    .export-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .export-member{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:5px;border:1px solid #eee;border-radius:9px}
-    .export-grid .export-cell{border-radius:6px;overflow:hidden;background:#f7f7f7}
+    .export-canvas{width:min(700px,100%);margin:0 auto 30px;padding:28px 28px 34px;background:#292929;color:#fff;border-radius:2px;box-shadow:0 18px 60px rgba(0,0,0,.45)}
+    .export-title{margin:0 0 18px;font-size:34px;line-height:1.1;font-weight:900;letter-spacing:-.06em;color:#fff;text-align:center}
+    .export-grid{display:flex;flex-direction:column;gap:24px}
+    .export-member{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:start}
+    .export-grid .export-cell{border-radius:0;overflow:hidden;background:#333}
     .export-grid .export-cell img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
-    .export-grid .export-grid-label{grid-column:1/-1;padding:2px 3px 1px;font-size:10px;font-weight:800;background:#fff}
-    .export-grid .export-impression{min-height:70px;display:grid;place-items:center;color:#aaa;font-size:9px;background:#fafafa}
-    .export-grid .export-impression img{aspect-ratio:1/1;min-height:70px}
-    .export-close{margin-right:auto;border:0;background:transparent;color:#777;font-size:13px;font-weight:700;cursor:pointer}
+    .export-grid .export-grid-label{grid-column:1;grid-row:2;padding:6px 0 0;font-size:12px;font-weight:800;line-height:1.2;color:#fff;background:transparent;text-align:center}
+    .export-grid .export-impression{aspect-ratio:1/1;display:grid;place-items:center;color:#888;font-size:9px;background:#333}
+    .export-grid .export-impression img{aspect-ratio:1/1}
+    .export-close{margin-right:auto;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:700;cursor:pointer;border-radius:999px;padding:8px 13px}
     .export-view.export-open{display:block}
     @media(max-width:760px){
       .next-wrap{padding:32px 0 16px}
       .next-wrap{gap:8px}
       .next-btn,.bottom-save-btn{padding:13px 18px}
       .bottom-save-btn{display:block}
-      .export-canvas{width:calc(100% - 28px);margin:14px auto 30px}
-      .export-title{font-size:26px;margin-bottom:14px}
-      .export-grid{gap:6px}
-      .export-member{gap:3px;padding:3px}
-      .export-grid .export-grid-label{display:block;font-size:9px;line-height:1.2;text-align:center}
-      .export-grid .export-impression{min-height:55px;font-size:8px}
-      .export-grid .export-impression img{min-height:70px}
+      .export-view{padding:18px 10px}
+      .export-toolbar{top:-18px;padding-bottom:8px}
+      .export-canvas{width:100%;margin:0 auto 20px;padding:22px 14px 28px}
+      .export-title{font-size:26px;margin-bottom:16px}
+      .export-grid{gap:18px}
+      .export-member{gap:8px}
+      .export-grid .export-grid-label{font-size:10px;padding-top:5px}
+      .export-grid .export-impression{font-size:8px}
     }
     .upload-input{display:none}
     [hidden]{display:none!important}
