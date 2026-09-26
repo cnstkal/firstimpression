@@ -39,9 +39,8 @@
     .table-title{padding:35px 0 38px}
     .table-title h1{font-size:clamp(38px,6vw,68px)}
     .table-head,.member-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-    .table-head{align-items:end;margin-bottom:10px;padding:0 0 7px;border-bottom:2px solid #111}
-    .head-label{font-size:13px;font-weight:800;letter-spacing:-.04em}
-    .head-label small{display:block;margin-top:1px;color:#aaa;font-size:8px;font-weight:600;letter-spacing:.02em}
+    .table-head{align-items:end;margin-bottom:10px;padding:0 0 7px}
+    .head-label{font-size:16px;font-weight:800;letter-spacing:-.04em}
     #members{display:flex;flex-direction:column;gap:14px}
     .member-row{height:260px;align-items:stretch}
     .profile{min-width:0;min-height:0;display:block;padding:0}
@@ -75,7 +74,7 @@
       .card-arrow{right:17px;top:16px;font-size:18px}
       .table-title{padding:26px 0 28px}
       .table-head,.member-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-      .head-label{font-size:11px}.head-label small{font-size:7px}
+      .head-label{font-size:14px}
       .member-row{height:150px}
       .impression{height:150px}
       .profile-photo{height:150px}
@@ -198,23 +197,45 @@
     }
 
     async function getWikiPhoto(groupName, memberName) {
-      const key = "wikiProfile:" + groupName + ":" + memberName;
+      const key = "wikiProfile:v2:" + groupName + ":" + memberName;
       const cached = localStorage.getItem(key);
       if (cached) return cached === "NONE" ? "" : cached;
 
       const query = encodeURIComponent(groupName + " " + memberName);
       const url = "https://ko.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=" + query +
-        "&gsrnamespace=0&gsrlimit=3&prop=pageimages&piprop=thumbnail&pithumbsize=500&format=json&origin=*";
+        "&gsrnamespace=0&gsrlimit=8&prop=pageimages&piprop=thumbnail&pithumbsize=500&format=json&origin=*";
 
       try {
         const response = await fetch(url);
         const data = await response.json();
         const pages = Object.values(data.query?.pages || {});
-        const page = pages.find(p => p.thumbnail?.source);
+
+        // 그룹 페이지의 대표사진이 반복해서 들어오는 것을 막고,
+        // 멤버 이름이 실제 문서 제목에 포함된 멤버 문서를 우선 사용한다.
+        const normalizedMember = memberName.replace(/\s+/g, "").toLowerCase();
+        const candidates = pages
+          .filter(page => page.thumbnail?.source)
+          .sort((a,b) => {
+            const at = (a.title || "").replace(/\s+/g, "").toLowerCase();
+            const bt = (b.title || "").replace(/\s+/g, "").toLowerCase();
+            const as = at === normalizedMember ? 0 : (at.startsWith(normalizedMember) ? 1 : 2);
+            const bs = bt === normalizedMember ? 0 : (bt.startsWith(normalizedMember) ? 1 : 2);
+            return as - bs;
+          });
+
+        const page = candidates.find(page => {
+          const title = (page.title || "").replace(/\s+/g, "").toLowerCase();
+          return title.includes(normalizedMember) && title !== groupName.replace(/\s+/g, "").toLowerCase();
+        }) || candidates.find(page => {
+          const title = (page.title || "").replace(/\s+/g, "").toLowerCase();
+          return title !== groupName.replace(/\s+/g, "").toLowerCase();
+        });
+
         const image = page?.thumbnail?.source || "";
         localStorage.setItem(key, image || "NONE");
         return image;
       } catch (error) {
+        localStorage.setItem(key, "NONE");
         return "";
       }
     }
