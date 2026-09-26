@@ -27,10 +27,7 @@
     .group-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
     .group-card{position:relative;min-height:180px;padding:28px 30px;background:#fff;border:1px solid var(--line);border-radius:16px;text-align:left;cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease;overflow:hidden}
     .group-card:hover{transform:translateY(-3px);border-color:#111;background:#fafafa}
-    .card-number{display:block;color:#aaa;font-size:12px;font-weight:700;letter-spacing:.08em}
-    .card-name{position:absolute;left:30px;bottom:27px;font-size:clamp(24px,3vw,40px);font-weight:700;letter-spacing:-.06em}
-    .card-arrow{position:absolute;right:28px;top:25px;font-size:24px;font-weight:400;transition:transform .18s}
-    .group-card:hover .card-arrow{transform:translate(3px,-3px)}
+    .card-name{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(24px,3vw,40px);font-weight:700;letter-spacing:-.06em;white-space:nowrap}
     input, textarea, [contenteditable="true"]{font-size:16px !important;}
     @media(max-width:760px){input,textarea,[contenteditable="true"]{font-size:16px !important;}}
     .table-view{padding-top:8px}
@@ -71,8 +68,7 @@
       .search-box{min-width:0;width:100%}
       .group-grid{gap:8px}
       .group-card{min-height:135px;padding:18px;border-radius:12px}
-      .card-name{left:18px;bottom:18px;font-size:20px}
-      .card-arrow{right:17px;top:16px;font-size:18px}
+      .card-name{font-size:20px}
       .table-title{padding:26px 0 28px}
       .table-head,.member-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);column-gap:10px}
       .head-label{font-size:14px}
@@ -96,7 +92,7 @@
       </header>
       <div class="controls">
         <div class="gender-tabs" id="genderTabs">
-          <button class="gender-tab" data-gender="male">남돌</button>
+          <button class="gender-tab active" data-gender="male">남돌</button>
           <button class="gender-tab" data-gender="female">여돌</button>
         </div>
         <label class="search-box">
@@ -189,9 +185,7 @@
         button.type = "button";
         button.className = "group-card";
         button.innerHTML =
-          '<span class="card-number">' + String(index + 1).padStart(2,"0") + '</span>' +
-          '<span class="card-name">' + group.name + '</span>' +
-          '<span class="card-arrow">↗</span>';
+          '<span class="card-name">' + group.name + '</span>';
         button.addEventListener("click", () => openGroup(group));
         groupGrid.appendChild(button);
       });
