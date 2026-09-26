@@ -45,7 +45,6 @@
     .profile-photo,.impression-photo{position:relative;overflow:hidden;background:linear-gradient(135deg,#f1f1f1,#fafafa)}
     .profile-photo{width:100%;height:100%;border-radius:10px}
     .profile-photo img,.impression-photo img{width:100%;height:100%;display:block;object-fit:cover}
-    .profile-photo img.concept-crop{position:absolute;width:100%;height:100%;object-fit:cover}
     .profile-placeholder,.photo-placeholder{position:absolute;inset:0;display:grid;place-items:center;color:#b4b4b4;font-weight:800;user-select:none}
     .profile-placeholder{font-size:32px}
     .profile-info{min-width:0}
@@ -207,45 +206,47 @@
     }
 
     async function getWikiPhoto(groupName, memberName) {
-      const key = "wikiProfile:v2:" + groupName + ":" + memberName;
+      const key = "wikiProfile:v3:" + groupName + ":" + memberName;
       const cached = localStorage.getItem(key);
       if (cached) return cached === "NONE" ? "" : cached;
 
-      const query = encodeURIComponent(groupName + " " + memberName);
-      const url = "https://ko.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=" + query +
-        "&gsrnamespace=0&gsrlimit=8&prop=pageimages&piprop=thumbnail&pithumbsize=500&format=json&origin=*";
+      // 그룹명과 멤버명을 함께 검색하면 그룹 대표사진이 잡힐 수 있으므로
+      // 멤버 개인 문서를 먼저 정확하게 검색한다.
+      const searches = [
+        memberName,
+        memberName + " " + groupName
+      ];
 
       try {
-        const response = await fetch(url);
-        const data = await response.json();
-        const pages = Object.values(data.query?.pages || {});
+        for (const term of searches) {
+          const query = encodeURIComponent(term);
+          const url = "https://ko.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=" + query +
+            "&gsrnamespace=0&gsrlimit=10&prop=pageimages&piprop=thumbnail&pithumbsize=500&format=json&origin=*";
+          const response = await fetch(url);
+          const data = await response.json();
+          const pages = Object.values(data.query?.pages || {});
+          const normalizedMember = memberName.replace(/\s+/g, "").toLowerCase();
+          const normalizedGroup = groupName.replace(/\s+/g, "").toLowerCase();
 
-        // 그룹 페이지의 대표사진이 반복해서 들어오는 것을 막고,
-        // 멤버 이름이 실제 문서 제목에 포함된 멤버 문서를 우선 사용한다.
-        const normalizedMember = memberName.replace(/\s+/g, "").toLowerCase();
-        const candidates = pages
-          .filter(page => page.thumbnail?.source)
-          .sort((a,b) => {
-            const at = (a.title || "").replace(/\s+/g, "").toLowerCase();
-            const bt = (b.title || "").replace(/\s+/g, "").toLowerCase();
-            const as = at === normalizedMember ? 0 : (at.startsWith(normalizedMember) ? 1 : 2);
-            const bs = bt === normalizedMember ? 0 : (bt.startsWith(normalizedMember) ? 1 : 2);
-            return as - bs;
+          const candidates = pages.filter(page => {
+            if (!page.thumbnail?.source) return false;
+            const title = (page.title || "").replace(/\s+/g, "").toLowerCase();
+            if (title === normalizedGroup || title.includes(normalizedGroup)) return false;
+            return title === normalizedMember ||
+              title.startsWith(normalizedMember) ||
+              title.includes(normalizedMember);
           });
 
-        const page = candidates.find(page => {
-          const title = (page.title || "").replace(/\s+/g, "").toLowerCase();
-          return title.includes(normalizedMember) && title !== groupName.replace(/\s+/g, "").toLowerCase();
-        }) || candidates.find(page => {
-          const title = (page.title || "").replace(/\s+/g, "").toLowerCase();
-          return title !== groupName.replace(/\s+/g, "").toLowerCase();
-        });
+          if (candidates.length) {
+            const image = candidates[0].thumbnail.source;
+            localStorage.setItem(key, image);
+            return image;
+          }
+        }
 
-        const image = page?.thumbnail?.source || "";
-        localStorage.setItem(key, image || "NONE");
-        return image;
-      } catch (error) {
         localStorage.setItem(key, "NONE");
+        return "";
+      } catch (error) {
         return "";
       }
     }
@@ -322,21 +323,8 @@
         profilePlaceholder.textContent = initials(name);
         profilePlaceholder.style.display = profile ? "none" : "grid";
 
-        const conceptSrc = conceptPhotos[group.id];
-
         if (profile) {
           profileImg.src = profile;
-          profileImg.onerror = () => {
-            profileImg.style.display = "none";
-            profilePlaceholder.style.display = "grid";
-          };
-        } else if (conceptSrc) {
-          profileImg.src = conceptSrc;
-          profileImg.style.display = "block";
-          profilePlaceholder.style.display = "none";
-          profileImg.classList.add("concept-crop");
-          profileImg.dataset.memberIndex = index;
-          profileImg.dataset.groupId = group.id;
           profileImg.onerror = () => {
             profileImg.style.display = "none";
             profilePlaceholder.style.display = "grid";
