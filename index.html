@@ -1,75 +1,13 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>첫인상표</title>
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-  <style>
-    :root{--text:#111;--muted:#999;--line:#e8e8e8;--soft:#f7f7f7}
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;background:#fff;color:var(--text);font-family:"Pretendard",sans-serif;-webkit-font-smoothing:antialiased}
-    button,input{font:inherit}
-    button{font-family:"Pretendard",sans-serif}
-    .wrap{width:min(1200px,calc(100% - 40px));margin:0 auto;padding:56px 0 90px}
-    .home-header{padding:28px 0 30px}
-    .eyebrow{margin:0 0 10px;font-size:12px;font-weight:800;letter-spacing:.12em;color:#aaa}
-    h1{margin:0;font-size:clamp(44px,7vw,82px);line-height:.95;letter-spacing:-.075em;font-weight:900}
-    
-    .controls{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px}
-    .gender-tabs{display:flex;gap:6px}
-    .gender-tab{border:0;background:#f4f4f4;color:#888;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:650;cursor:pointer}
-    .gender-tab.active{background:#111;color:#fff}
-    .search-box{height:40px;min-width:260px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:0 14px;color:#aaa}
-    .search-box span{font-size:20px;line-height:1}
-    .search-box input{width:100%;border:0;outline:0;background:transparent;font-size:13px;color:#111}
-    .group-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-    .group-card{position:relative;min-height:180px;padding:28px 30px;background:#fff;border:1px solid var(--line);border-radius:16px;text-align:left;cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease;overflow:hidden}
-    .group-card:hover{transform:translateY(-3px);border-color:#111;background:#fafafa}
-    .card-name{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(24px,3vw,40px);font-weight:700;letter-spacing:-.06em;white-space:nowrap}
-    input, textarea, [contenteditable="true"]{font-size:16px !important;}
-    @media(max-width:760px){input,textarea,[contenteditable="true"]{font-size:16px !important;}}
-    .table-view{padding-top:8px}
-    .back-btn{appearance:none;border:0;background:transparent;padding:8px 0;color:#888;font-size:13px;font-weight:700;cursor:pointer}
-    .back-btn:hover{color:#111}
-    .table-title{padding:35px 0 38px}
-    .table-title h1{font-size:clamp(38px,6vw,68px)}
-    .table-head,.member-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);column-gap:40px}
-    .table-head{align-items:end;margin-bottom:10px;padding:0 0 7px}
-    .table-head > :nth-child(3),.member-row > :nth-child(3){margin-left:0}
-    .head-label{font-size:16px;font-weight:800;letter-spacing:-.04em}
-    #members{display:flex;flex-direction:column;gap:14px}
-    .member-row{height:260px;align-items:stretch}
-    .profile{min-width:0;min-height:0;display:block;padding:0}
-    .profile-photo,.impression-photo{position:relative;overflow:hidden;background:linear-gradient(135deg,#f1f1f1,#fafafa)}
-    .profile-photo{width:100%;height:100%;border-radius:10px}
-    .profile-photo img,.impression-photo img{width:100%;height:100%;display:block;object-fit:cover}
-    .profile-placeholder,.photo-placeholder{position:absolute;inset:0;display:grid;place-items:center;color:#b4b4b4;font-weight:800;user-select:none}
-    .profile-placeholder{font-size:32px}
-    .profile-info{min-width:0}
-    .member-name{display:none}
-    .group-name{display:none}
-    .impression{position:relative;min-width:0;height:260px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fafafa}
-    .impression-photo{position:absolute;inset:0}
-    .photo-placeholder{flex-direction:column;gap:5px;color:#c3c3c3;font-size:13px;font-weight:700}
-    .photo-placeholder b{font-size:25px;font-weight:400;line-height:1}
-    .photo-placeholder span{font-size:10px;font-weight:500;color:#aaa}
-    .upload-label{position:absolute;right:9px;bottom:9px;z-index:2;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.1);color:#111;font-size:17px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-    .upload-label:hover{transform:scale(1.05)}
-    .no-result{padding:70px 0;text-align:center;color:#aaa;font-size:14px}
-    .next-wrap{display:flex;justify-content:center;gap:10px;padding:42px 0 20px}
-    .next-btn,.bottom-save-btn{border:0;background:#111;color:#fff;border-radius:999px;padding:13px 28px;font-size:14px;font-weight:800;cursor:pointer}
-    .bottom-save-btn{display:none}
-    .next-btn:hover{opacity:.86}
     .export-view{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.45);overflow:auto;display:none;padding:28px 18px}
-    .export-toolbar{position:sticky;top:-28px;z-index:2;display:flex;justify-content:flex-end;max-width:900px;margin:0 auto;padding:0 0 10px}
+    .export-toolbar{position:sticky;top:-28px;z-index:2;display:flex;justify-content:flex-end;max-width:1240px;margin:0 auto;padding:0 0 10px}
     .save-btn{display:none}
-    .export-canvas{width:min(900px,100%);margin:0 auto 30px;padding:34px 34px 40px;background:#fff;color:#111;border-radius:12px;box-shadow:0 14px 50px rgba(0,0,0,.18)}
-    .export-title{margin:0 0 26px;font-size:34px;line-height:1.1;font-weight:900;letter-spacing:-.06em;color:#111;text-align:center}
-    .export-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 24px}
-    .export-member{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;align-items:start}
-    .export-grid .export-cell{border-radius:7px;overflow:hidden;background:#f7f7f7}
+    .export-canvas{width:min(1240px,100%);margin:0 auto 30px;padding:0;background:#fff;color:#111;border-radius:12px;box-shadow:0 14px 50px rgba(0,0,0,.18);overflow:hidden}
+    .export-result-image{display:block;width:100%;height:auto;max-width:none;object-fit:contain;background:#fff}
+    .export-render{width:1200px;padding:42px 48px 48px;background:#fff;color:#111}
+    .export-title{margin:0 0 32px;font-size:48px;line-height:1.1;font-weight:900;letter-spacing:-.07em;color:#111;text-align:center}
+    .export-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:72px;row-gap:28px}
+    .export-member{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:start}
+    .export-grid .export-cell{border-radius:8px;overflow:hidden;background:#f7f7f7}
     .export-grid .export-cell img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
     .export-grid .export-impression{aspect-ratio:1/1;display:grid;place-items:center;color:#aaa;font-size:9px;background:#f7f7f7}
     .export-grid .export-impression img{aspect-ratio:1/1}
@@ -82,10 +20,11 @@
       .bottom-save-btn{display:block}
       .export-view{padding:18px 10px}
       .export-toolbar{top:-18px;padding-bottom:8px}
-      .export-canvas{width:100%;margin:0 auto 20px;padding:24px 12px 30px;border-radius:10px}
-      .export-title{font-size:26px;margin-bottom:20px}
-      .export-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 10px}
-      .export-member{gap:4px}
+      .export-canvas{width:100%;margin:0 auto 20px;border-radius:10px}
+      .export-render{width:900px;padding:28px 32px 34px}
+      .export-title{font-size:36px;margin-bottom:24px}
+      .export-grid{column-gap:58px;row-gap:20px}
+      .export-member{gap:6px}
       .export-grid .export-impression{font-size:8px}
     }
     .upload-input{display:none}
@@ -356,12 +295,14 @@
       return box;
     }
 
-    function renderExport(group) {
+    async function renderExport(group) {
       exportCanvas.innerHTML = "";
-      const title = document.createElement("h2");
-      title.className = "export-title";
-      title.textContent = group.name;
-      exportCanvas.appendChild(title);
+
+      // 실제 저장/꾹 눌러 저장되는 대상은 멤버 이름이나 개별 사진이 아닌
+      // 하나로 합쳐진 '완성표 전체 이미지' 한 장이다.
+      const render = document.createElement("div");
+      render.className = "export-render";
+      render.innerHTML = '<h2 class="export-title">' + group.name + ' 첫인상표</h2>';
 
       const grid = document.createElement("div");
       grid.className = "export-grid";
@@ -395,12 +336,40 @@
         addCell(profileSrc, "");
         addCell(firstSrc, "");
         addCell(currentSrc, "");
-
         grid.appendChild(memberCard);
       });
 
-      exportCanvas.appendChild(grid);
+      render.appendChild(grid);
+      document.body.appendChild(render);
+
+      // 이미지가 로드될 시간을 확보한 뒤 전체 표를 한 장의 이미지로 만든다.
+      const imgs = Array.from(render.querySelectorAll("img"));
+      await Promise.all(imgs.map(img => new Promise(resolve => {
+        if (img.complete) return resolve();
+        img.onload = resolve;
+        img.onerror = resolve;
+      })));
+
+      try {
+        const canvas = await html2canvas(render, {
+          backgroundColor: "#ffffff",
+          scale: Math.min(2, window.devicePixelRatio || 2),
+          useCORS: true,
+          allowTaint: false
+        });
+        const resultImg = document.createElement("img");
+        resultImg.className = "export-result-image";
+        resultImg.src = canvas.toDataURL("image/png");
+        resultImg.alt = group.name + " 첫인상표";
+        exportCanvas.appendChild(resultImg);
+      } catch (e) {
+        // 이미지 변환이 실패해도 팝업 안에서 표 자체는 볼 수 있게 한다.
+        exportCanvas.appendChild(render);
+      } finally {
+        render.remove();
+      }
     }
+
 
     function renderMembers(group) {
       membersEl.innerHTML = "";
@@ -486,21 +455,12 @@
       saveBtn.textContent = "저장 중…";
       if (bottomSaveBtn) bottomSaveBtn.textContent = "저장 중…";
       try {
-        const canvas = await html2canvas(exportCanvas, {
-          backgroundColor: "#ffffff",
-          scale: Math.min(3, window.devicePixelRatio || 2),
-          useCORS: true,
-          allowTaint: false
-        });
-        canvas.toBlob(blob => {
-          if (!blob) throw new Error("blob");
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = (document.getElementById("selectedGroupName").textContent || "첫인상표") + "-첫인상표.png";
-          a.click();
-          setTimeout(() => URL.revokeObjectURL(url), 1000);
-        }, "image/png");
+        const resultImg = exportCanvas.querySelector(".export-result-image");
+        if (!resultImg || !resultImg.src) throw new Error("result image");
+        const a = document.createElement("a");
+        a.href = resultImg.src;
+        a.download = (document.getElementById("selectedGroupName").textContent || "첫인상표") + "-첫인상표.png";
+        a.click();
       } catch (e) {
         alert("자동 저장이 안 되면 완성된 표를 꾹 눌러 이미지로 저장해주세요.");
       } finally {
