@@ -68,11 +68,12 @@
     .export-canvas{width:min(760px,calc(100% - 48px));margin:20px auto 50px;background:#fff}
     .export-title{margin:0 0 18px;font-size:34px;font-weight:900;letter-spacing:-.06em}
     .export-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .export-grid .export-cell{border-radius:8px;overflow:hidden;background:#f7f7f7}
+    .export-member{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:5px;border:1px solid #eee;border-radius:9px}
+    .export-grid .export-cell{border-radius:6px;overflow:hidden;background:#f7f7f7}
     .export-grid .export-cell img{width:100%;aspect-ratio:1.65/1;object-fit:cover;display:block}
-    .export-grid .export-label{padding:7px 10px;font-size:11px;font-weight:800;background:#fff}
-    .export-grid .export-impression{min-height:90px;display:grid;place-items:center;color:#aaa;font-size:10px;background:#fafafa}
-    .export-grid .export-impression img{aspect-ratio:1.65/1;min-height:90px}
+    .export-grid .export-grid-label{grid-column:1/-1;padding:2px 3px 1px;font-size:10px;font-weight:800;background:#fff}
+    .export-grid .export-impression{min-height:70px;display:grid;place-items:center;color:#aaa;font-size:9px;background:#fafafa}
+    .export-grid .export-impression img{aspect-ratio:1.65/1;min-height:70px}
     .export-close{margin-right:auto;border:0;background:transparent;color:#777;font-size:13px;font-weight:700;cursor:pointer}
     .export-view.export-open{display:block}
     @media(max-width:760px){
@@ -83,8 +84,9 @@
       .export-canvas{width:calc(100% - 28px);margin:14px auto 30px}
       .export-title{font-size:26px;margin-bottom:14px}
       .export-grid{gap:6px}
-      .export-grid .export-label{padding:6px 7px;font-size:10px}
-      .export-grid .export-impression{min-height:70px;font-size:9px}
+      .export-member{gap:3px;padding:3px}
+      .export-grid .export-grid-label{font-size:9px}
+      .export-grid .export-impression{min-height:55px;font-size:8px}
       .export-grid .export-impression img{min-height:70px}
     }
     .upload-input{display:none}
@@ -366,11 +368,14 @@
       grid.className = "export-grid";
 
       group.members.forEach(([name], index) => {
+        const memberCard = document.createElement("div");
+        memberCard.className = "export-member";
+
         const profileSrc = document.querySelectorAll("#members .profile-photo img")[index]?.src || "";
         const firstSrc = localStorage.getItem(storageKey(group.id,index,"first"));
         const currentSrc = localStorage.getItem(storageKey(group.id,index,"current"));
 
-        const addCell = (src, label, fallback) => {
+        const addCell = (src, fallback) => {
           const cell = document.createElement("div");
           cell.className = "export-cell";
           if (src) {
@@ -385,19 +390,21 @@
             empty.textContent = fallback;
             cell.appendChild(empty);
           }
-          const labelEl = document.createElement("div");
-          labelEl.className = "export-label";
-          if (label) {
-            labelEl.textContent = label;
-            cell.appendChild(labelEl);
-          }
-          grid.appendChild(cell);
+          memberCard.appendChild(cell);
         };
 
-        addCell(profileSrc, name, name);
-        addCell(firstSrc, "첫인상", "첫인상");
-        addCell(currentSrc, "현인상", "현인상");
+        addCell(profileSrc, "");
+        addCell(firstSrc, "");
+        addCell(currentSrc, "");
+
+        const label = document.createElement("div");
+        label.className = "export-grid-label";
+        label.textContent = name;
+        memberCard.appendChild(label);
+
+        grid.appendChild(memberCard);
       });
+
       exportCanvas.appendChild(grid);
     }
 
