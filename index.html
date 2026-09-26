@@ -363,8 +363,14 @@
       render.appendChild(title);
       const grid = document.createElement("div");
       grid.className = "export-grid";
-      grid.style.gridTemplateRows = "repeat(" + Math.ceil(group.members.length / 2) + ", minmax(0, 1fr))";
-      grid.style.gridAutoFlow = "column";
+      if (group.members.length <= 4) {
+        grid.style.gridTemplateColumns = "repeat(" + group.members.length + ", minmax(0, 1fr))";
+        grid.style.gridTemplateRows = "1fr";
+        grid.style.gridAutoFlow = "row";
+      } else {
+        grid.style.gridTemplateRows = "repeat(" + Math.ceil(group.members.length / 2) + ", minmax(0, 1fr))";
+        grid.style.gridAutoFlow = "column";
+      }
       const orderedNames = (memberOrder[group.id] || group.members.map(([name]) => name));
       orderedNames.forEach(name => {
         const index = group.members.findIndex(([memberName]) => memberName === name);
