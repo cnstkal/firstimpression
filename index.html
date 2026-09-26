@@ -64,6 +64,7 @@
     .next-btn:hover{opacity:.86}
     .export-view{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.45);overflow:auto;display:none;padding:28px 14px}
     .export-toolbar{position:sticky;top:-28px;z-index:2;display:flex;justify-content:center;width:min(1460px,100%);margin:0 auto;padding:0 0 10px}
+    .export-toolbar .save-btn{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:5}
     .save-btn{display:block;border:0;background:#111;color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:800;cursor:pointer}
     .export-canvas{width:min(1460px,100%);margin:0 auto 30px;padding:0;background:#fff;color:#111;border-radius:12px;box-shadow:0 14px 50px rgba(0,0,0,.18);overflow:hidden}
     .export-result-image{display:block;width:100%;height:auto;background:#fff}
@@ -78,6 +79,7 @@
     @media(max-width:760px){
       .export-view{padding:18px 8px}
       .export-toolbar{top:-18px;width:100%;padding-bottom:8px}
+      .export-toolbar .save-btn{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:5}
       .export-canvas{width:1100px;max-width:none;margin:0 auto 20px;border-radius:10px}
       .export-render{width:1100px;padding:30px 40px 40px}
       .export-title{font-size:40px;margin-bottom:28px;font-weight:700}
@@ -349,6 +351,8 @@
       return box;
     }
 
+    const memberOrder = {"bts":["진","RM","슈가","제이홉","지민","뷔","정국"],"blackpink":["지수","제니","로제","리사"],"seventeen":["에스쿱스","정한","조슈아","준","호시","원우","우지","디에잇","민규","도겸","승관","버논","디노"],"twice":["나연","정연","모모","사나","지효","미나","다현","채영","쯔위"],"straykids":["방찬","리노","창빈","현진","한","필릭스","승민","아이엔"],"ive":["가을","안유진","레이","장원영","리즈","이서"],"aespa":["카리나","지젤","윈터","닝닝"],"lesserafim":["사쿠라","김채원","허윤진","카즈하","홍은채"],"ateez":["홍중","성화","윤호","여상","산","민기","우영","종호"],"riize":["쇼타로","은석","성찬","원빈","소희","앤톤"]};
+
     async function renderExport(group) {
       exportCanvas.innerHTML = "";
       const render = document.createElement("div");
@@ -359,7 +363,11 @@
       render.appendChild(title);
       const grid = document.createElement("div");
       grid.className = "export-grid";
-      group.members.forEach(([name], index) => {
+      grid.style.gridTemplateRows = "repeat(" + Math.ceil(group.members.length / 2) + ", minmax(0, 1fr))";
+      grid.style.gridAutoFlow = "column";
+      const orderedNames = (memberOrder[group.id] || group.members.map(([name]) => name));
+      orderedNames.forEach(name => {
+        const index = group.members.findIndex(([memberName]) => memberName === name);
         const memberCard = document.createElement("div");
         memberCard.className = "export-member";
         const sources = [
