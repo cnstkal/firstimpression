@@ -383,8 +383,10 @@
           }
           const labelEl = document.createElement("div");
           labelEl.className = "export-label";
-          labelEl.textContent = label;
-          cell.appendChild(labelEl);
+          if (label) {
+            labelEl.textContent = label;
+            cell.appendChild(labelEl);
+          }
           grid.appendChild(cell);
         };
 
