@@ -162,6 +162,21 @@
   </section>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAlDkWoygbctNizIddbfBrPw41Yvls0PAg",
+      authDomain: "first-64c8f.firebaseapp.com",
+      projectId: "first-64c8f",
+      storageBucket: "first-64c8f.firebasestorage.app",
+      messagingSenderId: "677879371298",
+      appId: "1:677879371298:web:99316b76796380280a9c7b"
+    };
+
+    const firebaseApp = initializeApp(firebaseConfig);
+    window.firebaseApp = firebaseApp;
+  </script>
   <script>
     const groups = [
       { id:"bts", name:"BTS", gender:"male", members:[["RM",""],["진",""],["슈가",""],["제이홉",""],["지민",""],["뷔",""],["정국",""]] },
