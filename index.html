@@ -16,7 +16,6 @@
     .home-header{padding:28px 0 30px}
     .eyebrow{margin:0 0 10px;font-size:12px;font-weight:800;letter-spacing:.12em;color:#aaa}
     h1{margin:0;font-size:clamp(44px,7vw,82px);line-height:.95;letter-spacing:-.075em;font-weight:900}
-    
     .controls{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px}
     .gender-tabs{display:flex;gap:6px}
     .gender-tab{border:0;background:#f4f4f4;color:#888;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:650;cursor:pointer}
@@ -164,7 +163,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     const groups = [
-      { id:"bts", name:"BTS", gender:"male", members:[["RM",""],["진",""],["슈가",""],["제이홉",""],["지민",""],["뷔",""],["정국",""]] },
+      { id:"bts", name:"BTS", gender:"male", members:[["RM","/images/bts/rm.jpg"],["진",""],["슈가",""],["제이홉",""],["지민",""],["뷔",""],["정국",""]] },
       { id:"blackpink", name:"BLACKPINK", gender:"female", members:[["지수",""],["제니",""],["로제",""],["리사",""]] },
       { id:"seventeen", name:"SEVENTEEN", gender:"male", members:[["에스쿱스",""],["정한",""],["조슈아",""],["준",""],["호시",""],["원우",""],["우지",""],["디에잇",""],["민규",""],["도겸",""],["승관",""],["버논",""],["디노",""]] },
       { id:"twice", name:"TWICE", gender:"female", members:[["나연",""],["정연",""],["모모",""],["사나",""],["지효",""],["미나",""],["다현",""],["채영",""],["쯔위",""]] },
@@ -475,12 +474,10 @@
 
     renderHome();
 
-    // 자동으로 불러오던 프로필 사진 캐시를 모두 비우고, 사용자가 직접 올린 사진만 사용
     Object.keys(localStorage).forEach(key => {
       if (key.startsWith("wikiProfile:v")) localStorage.removeItem(key);
     });
 
-    // 새로고침해도 현재 보고 있던 화면을 그대로 유지
     const savedView = localStorage.getItem("firstimpression:view");
     const savedGroupId = localStorage.getItem("firstimpression:selectedGroup");
     if (savedView === "table" && savedGroupId) {
