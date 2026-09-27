@@ -402,8 +402,19 @@
           profilePlaceholder.style.display = "none";
         }
 
-        const savedProfile = profile || "./images/" + group.id + "/" + name + ".webp";
-        showProfile(savedProfile);
+        if (profile) {
+          showProfile(profile);
+        } else {
+          const jpgProfile = "./images/" + group.id + "/" + name + ".jpg";
+          const webpProfile = "./images/" + group.id + "/" + name + ".webp";
+          profileImg.onerror = function() {
+            profileImg.onerror = function() {
+              showProfile("");
+            };
+            profileImg.src = webpProfile;
+          };
+          showProfile(jpgProfile);
+        }
         profilePhoto.append(profileImg, profilePlaceholder);
 
         const info = document.createElement("div");
